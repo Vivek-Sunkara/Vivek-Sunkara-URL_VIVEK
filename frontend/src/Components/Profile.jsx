@@ -1,81 +1,44 @@
-import React from 'react';
+import { Avatar, Container, Text, Stack } from '@mantine/core'
+import React, { useEffect, useState } from 'react'
+import Service from '../utils/http'
 
-function Avatar({ src, alt }) {
-    return (
-        <img
-            src={src}
-            alt={alt}
-            style={{
-                width: "150px",
-                height: "150px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                marginBottom: "15px"
-            }}
-            onError={(e) => {
-                e.target.src = "https://via.placeholder.com/150";
-            }}
-        />
-    );
-}
 
 export default function Profile() {
-    const dummyData = {
-        name: "Sunkara Naga Sai Ram Vivek1",
-        email: "s.nagasairamvivek@gmail.com",
-        profilePicture: "frontend\src\public\gfytdngrbfed.jpg",
-        bio: "Full Stack Developer | Tech Enthusiast | Open Source Contributor",
-        location: "Hyderabad, India",
-        website: "https://sunkaranagasairamvivek.dev",
-        mobile_number: "+91 9876543210",
-        socialLinks: {
-            github: "https://github.com/sunkaranagasairamvivek",
-            linkedin: "https://linkedin.com/in/sunkaranagasairamvivek",
-            twitter: "https://twitter.com/sunkaranagasairamvivek"
-        }
-    };
+   const service = new Service()
+   const [data , setData ] = useState(null)
+   const getProfile = async ()=>{
+       const response = await service.get("user/me");
+       setData(response)
+   }
+   useEffect( ()=>{
+       getProfile()
+   } , [] )
 
-    return (
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: "100vh",
-                textAlign: "center"
-            }}
-        >
-            <div>
-                <h1>Profile Page</h1>
 
-                <Avatar src={dummyData.profilePicture} alt="Profile" />
+   return (<Container size={"md"}  >
+       <Stack
 
-                <h2>{dummyData.name}</h2>
-                <p>Email: {dummyData.email}</p>
-                <p>Bio: {dummyData.bio}</p>
-                <p>Location: {dummyData.location}</p>
 
-                <p>
-                    Website:{" "}
-                    <a href={dummyData.website} target="_blank" rel="noopener noreferrer">
-                        {dummyData.website}
-                    </a>
-                </p>
+           h={300}
+           bg="var(--mantine-color-body)"
+           align="center"
+           justify="center"
+           gap="md"
+       >
+           {data ? (
+               <>
+                   <Avatar src={data.avatar} size="xl" alt="it's me" />
+                   <Text  color='red' fw={700}> {data.name}</Text>
+                   <Text> {data._id}</Text>
+                   <Text> {data.email}</Text>
+               </>
+           ) : (
+               <Text>Loading...</Text>
+           )}
+       </Stack>
 
-                <p>Mobile: {dummyData.mobile_number}</p>
 
-                <div style={{ display: "flex", justifyContent: "center", gap: "15px" }}>
-                    <a href={dummyData.socialLinks.github} target="_blank" rel="noopener noreferrer">
-                        GitHub
-                    </a>
-                    <a href={dummyData.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
-                        LinkedIn
-                    </a>
-                    <a href={dummyData.socialLinks.twitter} target="_blank" rel="noopener noreferrer">
-                        Twitter
-                    </a>
-                </div>
-            </div>
-        </div>
-    );
+   </Container>)
 }
+// https://url-shortener-bootcamp.onrender.com/url/shortener
+
